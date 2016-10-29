@@ -1,4 +1,5 @@
 package io;
+import terrain.incendie;
 import terrain.Carte;
 
 import java.io.*;
@@ -44,7 +45,7 @@ public class LecteurDonnees {
         System.out.println("\n == Lecture du fichier" + fichierDonnees);
         LecteurDonnees lecteur = new LecteurDonnees(fichierDonnees);
         lecteur.lireCarte(data);
-        lecteur.lireIncendies();
+        lecteur.lireIncendies(data);
         lecteur.lireRobots();
         scanner.close();
         System.out.println("\n == Lecture terminee");
@@ -135,13 +136,15 @@ public class LecteurDonnees {
     /**
      * Lit et affiche les donnees des incendies.
      */
-    private void lireIncendies() throws DataFormatException {
+    private void lireIncendies(DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
         try {
             int nbIncendies = scanner.nextInt();
             System.out.println("Nb d'incendies = " + nbIncendies);
+            data.setIncendies(nbIncendies);
+            
             for (int i = 0; i < nbIncendies; i++) {
-                lireIncendie(i);
+                lireIncendie(i,data);
             }
 
         } catch (NoSuchElementException e) {
@@ -155,7 +158,7 @@ public class LecteurDonnees {
      * Lit et affiche les donnees du i-eme incendie.
      * @param i
      */
-    private void lireIncendie(int i) throws DataFormatException {
+    private void lireIncendie(int i, DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
         System.out.print("Incendie " + i + ": ");
 
@@ -167,6 +170,8 @@ public class LecteurDonnees {
                 throw new DataFormatException("incendie " + i
                         + "nb litres pour eteindre doit etre > 0");
             }
+            data.incendies[i] = new incendie(data.carte.getCase(lig, col), intensite);
+            
             verifieLigneTerminee();
 
             System.out.println("position = (" + lig + "," + col
