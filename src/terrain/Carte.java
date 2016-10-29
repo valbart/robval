@@ -7,14 +7,22 @@ import enumeration.*;
 public class Carte {
 	
 	private Case[][] map;
-	private int nbLigne;
-	private int nbColonne;
+	public int nbLigne;
+	public int nbColonne;
 	private int tailleCase;
 
 	public Carte() {
 		this.nbLigne = 0;
 		this.nbColonne = 0;
 		this.tailleCase = 0;
+	}
+	
+	public int getNbLigne(){
+		return this.nbLigne;
+	}
+
+	public int getNbColonne(){
+		return this.nbColonne;
 	}
 	
 	public void setNbLigne(int i) {
