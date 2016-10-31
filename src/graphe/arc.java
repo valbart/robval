@@ -4,9 +4,9 @@ public class arc {
 	
 	private int ligneVoisin;
 	private int colonneVoisin;
-	private int cout;
+	private float cout;
 	
-	public arc(int i, int j, int c) {
+	public arc(int i, int j, float c) {
 		this.ligneVoisin = i;
 		this.colonneVoisin = j;
 		this.cout = c;
@@ -29,11 +29,11 @@ public class arc {
 		this.colonneVoisin = j;
 	}
 	
-	public int getCout() {
+	public float getCout() {
 		return this.cout;
 	}
 	
-	public void setCout(int c) {
+	public void setCout(float c) {
 		this.cout = c;
 	}
 	
