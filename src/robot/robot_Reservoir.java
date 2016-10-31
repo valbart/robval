@@ -3,6 +3,8 @@ package robot;
 import terrain.incendie;
 import terrain.Case;
 import java.io.*;
+import java.util.concurrent.TimeUnit;
+
 import terrain.Carte;
 import enumeration.NatureTerrain;
 import enumeration.Direction;
@@ -16,7 +18,7 @@ public abstract class robot_Reservoir extends robot {
 	public void remplissage(Carte carte) {
 		this.litre_Actuel = this.capacite_Reservoir;
 		try {
-		Thread.sleep(1000.0 * this.capacite_Reservoir / this.debit_Remplissage);
+			TimeUnit.MILLISECONDS.sleep((long)(1000.0 * this.capacite_Reservoir / this.debit_Remplissage));
 		} catch (InterruptedException e) {
 			
 		}
@@ -26,7 +28,7 @@ public abstract class robot_Reservoir extends robot {
 		feu.setIntensite(feu.getIntensite()-volume);
 		this.litre_Actuel -= volume;
 		try {
-		Thread.sleep(1000 * volume / this.debit_Vidage);
+			TimeUnit.MILLISECONDS.sleep((long)(1000 * volume / this.debit_Vidage));
 		} catch (InterruptedException e){
 			
 		}

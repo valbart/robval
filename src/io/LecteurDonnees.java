@@ -1,5 +1,5 @@
 package io;
-import terrain.incendie;
+import terrain.*;
 import terrain.Carte;
 
 import java.io.*;
@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.zip.DataFormatException;
 
 import enumeration.NatureTerrain;
-
+import robot.*;
 
 
 /**
@@ -46,11 +46,31 @@ public class LecteurDonnees {
         LecteurDonnees lecteur = new LecteurDonnees(fichierDonnees);
         lecteur.lireCarte(data);
         lecteur.lireIncendies(data);
-        lecteur.lireRobots();
+        lecteur.lireRobots(data);
         scanner.close();
         System.out.println("\n == Lecture terminee");
     }
-
+    
+    private robot parseType(String S, Case pos) throws DataFormatException {
+    	robot newRobot;
+    	switch(S) {
+    	case "DRONE":
+    		newRobot = new Drone(pos);
+    		break;
+    	case "CHENILLES": 
+    		newRobot = new robot_Chenille(pos);
+    		break;
+    	case "PATTES":
+    		newRobot = new robot_Pattes(pos);
+    		break;
+    	case "ROUES":
+    		newRobot = new robot_Roues(pos);
+    		break;
+    	default:
+    			throw new DataFormatException("Robot inconnu : carte invalide");
+    	}
+    	return newRobot;
+    }
 
 
 
@@ -187,13 +207,14 @@ public class LecteurDonnees {
     /**
      * Lit et affiche les donnees des robots.
      */
-    private void lireRobots() throws DataFormatException {
+    private void lireRobots(DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
         try {
             int nbRobots = scanner.nextInt();
+            data.setRobots(nbRobots);
             System.out.println("Nb de robots = " + nbRobots);
             for (int i = 0; i < nbRobots; i++) {
-                lireRobot(i);
+                lireRobot(i,data);
             }
 
         } catch (NoSuchElementException e) {
@@ -207,7 +228,7 @@ public class LecteurDonnees {
      * Lit et affiche les donnees du i-eme robot.
      * @param i
      */
-    private void lireRobot(int i) throws DataFormatException {
+    private void lireRobot(int i, DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
         System.out.print("Robot " + i + ": ");
 
@@ -215,11 +236,14 @@ public class LecteurDonnees {
             int lig = scanner.nextInt();
             int col = scanner.nextInt();
             System.out.print("position = (" + lig + "," + col + ");");
+            Case posRobot = data.carte.getCase(lig, col);
+            
             String type = scanner.next();
-
+            robot robot = parseType(type,posRobot);           
             System.out.print("\t type = " + type);
+            data.robots[i] = robot;
 
-
+            // A FAIRE : SET LA VITESSE EVENTUELLEMENT SPECIFIE
             // lecture eventuelle d'une vitesse du robot (entier)
             System.out.print("; \t vitesse = ");
             String s = scanner.findInLine("(\\d+)");	// 1 or more digit(s) ?

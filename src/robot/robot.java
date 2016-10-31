@@ -42,6 +42,7 @@ public abstract class robot {
 				try {
 					TimeUnit.MILLISECONDS.sleep(450);
 				} catch (InterruptedException e) {
+					
 				}
 			} else {
 				System.out.println("Impossible pour ce robot d'avancer sur ce terrain");

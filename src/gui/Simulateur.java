@@ -1,5 +1,6 @@
 package gui;
 
+import robot.*;
 import terrain.*;
 import enumeration.*;
 
@@ -53,6 +54,8 @@ class Simulateur implements Simulable {
 		return couleur;
 	}
 	
+	
+	// POUR LES FONCTIONS DESSINS : ON A TOUT DECALER SELON UN VEC (tailleCarre,tailleCarr) SINON LA MAP SORT DE LA FENETRE
 	private void drawCase(Case c) {
 		int i = c.getLigne();
 		int j = c.getColonne();
@@ -67,6 +70,14 @@ class Simulateur implements Simulable {
 		gui.addGraphicalElement(new Text(col*tailleCarre+tailleCarre, lig*tailleCarre+tailleCarre, Color.RED, "FEU"));
 	}
 	
+	
+	private void drawRobot(robot r) {
+		Case c  = r.get_Position();
+		int lig = c.getLigne();
+		int col = c.getColonne();
+		gui.addGraphicalElement(new Text(col*tailleCarre+tailleCarre, lig*tailleCarre+tailleCarre, Color.BLACK, "ROB"));
+	}
+	
 	private void draw() {
         gui.reset();
         for(int i = 0; i < this.data.carte.getNbLigne(); i++) {
@@ -76,6 +87,9 @@ class Simulateur implements Simulable {
         }
         for (int i = 0; i < this.data.incendies.length; i++) {
         	this.drawIncendie(this.data.incendies[i]);
+        }
+        for (int j = 0; j < this.data.robots.length; j++) {
+        	this.drawRobot(this.data.robots[j]);
         }
 	}
 	
