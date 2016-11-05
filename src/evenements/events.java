@@ -190,7 +190,7 @@ public class EvenementRemplirReservoir extends Evenement {
 	}
 
 	public void execute(){
-		if (robot.getCapacite() < robot.getCapaciteMax()) {
+		if (robot.litre_Actuel() < robot.capacite_Reservoir()) {
 			this.robot.remplissage(carte);
         }
 
