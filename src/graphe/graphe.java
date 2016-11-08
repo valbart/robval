@@ -1,8 +1,12 @@
 package graphe;
 import java.util.*;
+
+import javax.print.attribute.IntegerSyntax;
+
 import enumeration.*;
 import robot.*;
 import terrain.*;
+import graphe.sommet;
 
 public class graphe {
 	
@@ -70,8 +74,10 @@ public class graphe {
 				break;
 			case CHENILLES:
 				v = (nature == NatureTerrain.FORET) ? 30 : 60;
+				break;
 			case PATTES:
 				v = (nature == NatureTerrain.ROCHE) ? 10 : 30;
+				break;
 		}
 		return v;
 	}
@@ -91,7 +97,7 @@ public class graphe {
 	 */
 	private void majGraphe(int i, int j, Carte carte, TypeRobot type){
 		for(Direction dir : Direction.values()) {
-			if (carte.checkDir(i, j, dir)) {
+			if (peutAvancer(carte.getCase(i, j).getNature(),type) && carte.checkDir(i, j, dir)) {
 				Case voisin = carte.getVoisin(i, j, dir);
 				NatureTerrain natureDepart = carte.getCase(i, j).getNature();
 				NatureTerrain natureArrive = voisin.getNature();
@@ -123,6 +129,66 @@ public class graphe {
 			}
 		}
 		return s;
+	}
+	
+	public sommet trouveMin(float[][] Q){
+		sommet s = new sommet(0,0);
+		float min = Q[0][0];
+		for (int i = 0; i < this.nbLigne; i++) {
+			for (int j = 0; j < this.nbLigne; j++) {
+				if ( Q[i][j] != -1 && Q[i][j] < min) {
+					s.setI(i);
+					s.setJ(j);
+					min = Q[i][j];
+				}
+			}
+		}
+		return s;
+	}
+	
+	public void majDistance(sommet s, float[][] Q, sommet[][] pred) {
+		int i = s.getI();
+		int j = s.getJ();
+		for (arc a : this.graphe[i][j]) {
+			int iVoisin = a.getLigneVoisin();
+			int jVoisin = a.getColonneVoisin();
+			if (Q[iVoisin][jVoisin] > Q[i][j] + a.getCout()) {
+				Q[iVoisin][jVoisin] = Q[i][j] + a.getCout();
+				pred[iVoisin][jVoisin].setI(i);
+				pred[iVoisin][jVoisin].setJ(j);
+			}
+		}
+		Q[i][j] = -1;
+	}
+	
+	public LinkedList<sommet> dijkstra(sommet sDeb, sommet sFin) {
+		LinkedList<sommet> l  = new LinkedList();
+		float[][] Q;
+		Q = new float[this.nbLigne][this.nbColonne];
+		sommet[][] pred;
+		pred = new sommet[this.nbLigne][this.nbColonne];
+		for (int i = 0; i < this.nbLigne; i ++){
+			for (int j = 0; j < this.nbColonne; j++) {
+				Q[i][j] = (float) Integer.MAX_VALUE;
+				pred[i][j] = new sommet(i,j);
+			}
+		}
+		
+		Q[sDeb.getI()][sDeb.getJ()] = 0;
+		
+    	while (Q[sFin.getI()][sFin.getJ()] != -1) {
+			sommet s = trouveMin(Q);
+			majDistance(s, Q, pred);
+		}
+
+		sommet s2 = sFin;
+		while ((s2.getJ() != sDeb.getJ()) || (s2.getI() != sDeb.getI())) {
+			l.add(s2);
+			s2 = pred[s2.getI()][s2.getJ()];
+	    	System.out.println("(" + s2.getI() + "," + s2.getJ() + ")\n");
+		}
+		System.out.println(s2.getI()+ " " + s2.getJ());
+		return l;
 	}
 	
 }
