@@ -21,11 +21,11 @@ import gui.Text;
 class Simulateur implements Simulable {
 
 	private DonneesSimulation data;
-	
+
 	private GUISimulator gui;
-	
+
 	private int tailleCarre;
-	
+
 	public Simulateur(GUISimulator gui, DonneesSimulation data, int tailleCarre) {
 		this.gui = gui;
 		gui.setSimulable(this);
@@ -33,7 +33,7 @@ class Simulateur implements Simulable {
 		this.tailleCarre = tailleCarre;
 		draw();
 	}
-	
+
 	private Color getColorCase(Case c) {
 		NatureTerrain n = c.getNature();
 		Color couleur = Color.WHITE;
@@ -41,20 +41,20 @@ class Simulateur implements Simulable {
 		case EAU:
 			couleur =  Color.BLUE;
 			break;
-		case FORET: 
+		case FORET:
 			couleur =  Color.GREEN;
 			break;
-		case ROCHE: 
+		case ROCHE:
 			couleur =  Color.GRAY;
 			break;
-		case HABITAT: 
-			couleur =  Color.orange;		
+		case HABITAT:
+			couleur =  Color.orange;
 		default:
 		}
 		return couleur;
 	}
-	
-	
+
+
 	// POUR LES FONCTIONS DESSINS : ON A TOUT DECALER SELON UN VEC (tailleCarre,tailleCarr) SINON LA MAP SORT DE LA FENETRE
 	private void drawCase(Case c) {
 		int i = c.getLigne();
@@ -62,28 +62,28 @@ class Simulateur implements Simulable {
 		Color couleur = getColorCase(c);
 		gui.addGraphicalElement(new Rectangle(j*tailleCarre+tailleCarre, i*tailleCarre+tailleCarre, Color.BLACK, couleur, tailleCarre));
 	}
-	
+
 	private void drawIncendie(incendie i) {
 		Case c = i.getPosition();
 		int lig = c.getLigne();
 		int col = c.getColonne();
 		gui.addGraphicalElement(new Text(col*tailleCarre+tailleCarre, lig*tailleCarre+tailleCarre, Color.RED, "FEU"));
 	}
-	
-	
+
+
 	private void drawRobot(robot r) {
 		Case c  = r.get_Position();
 		int lig = c.getLigne();
 		int col = c.getColonne();
 		gui.addGraphicalElement(new Text(col*tailleCarre+tailleCarre, lig*tailleCarre+tailleCarre, Color.BLACK, "ROB"));
 	}
-	
+
 	private void draw() {
         gui.reset();
         for(int i = 0; i < this.data.carte.getNbLigne(); i++) {
         	for (int j = 0; j < this.data.carte.getNbColonne(); j++) {
         		this.drawCase(this.data.carte.getCase(i, j));
-        	}        		
+        	}
         }
         for (int i = 0; i < this.data.incendies.length; i++) {
         	this.drawIncendie(this.data.incendies[i]);
@@ -92,8 +92,8 @@ class Simulateur implements Simulable {
         	this.drawRobot(this.data.robots[j]);
         }
 	}
-	
-	
+
+
     @Override
     public void next() {
     }
@@ -101,5 +101,5 @@ class Simulateur implements Simulable {
     @Override
     public void restart() {
     }
-		
+
 }
