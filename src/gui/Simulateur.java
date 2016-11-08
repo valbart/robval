@@ -25,9 +25,12 @@ class Simulateur implements Simulable {
 	private GUISimulator gui;
 
 	private int tailleCarre;
+ 	private long dateActuelle;
+	private PriorityQueue<Evenement> events;
 
 	public Simulateur(GUISimulator gui, DonneesSimulation data, int tailleCarre) {
 		this.gui = gui;
+		this.dateActuelle = 0;
 		gui.setSimulable(this);
 		this.data = data;
 		this.tailleCarre = tailleCarre;
@@ -94,6 +97,26 @@ class Simulateur implements Simulable {
 	}
 
 
+	/**
+	 * Ajoute des événements au simulateur.
+	 * @param e événement à ajouter au simulateur
+	 */
+public void ajouteEvenement(Evenement e){
+		this.events.add(e);
+}
+
+/**
+     * Augmente la date du simulateur.
+     */
+	private void incrementeDate(){
+		this.dateActuelle++;
+		while (this.events.peek() != null && (this.events.peek().getDate() == this.dateActuelle)) {
+			this.events.poll().execute();
+		}
+		draw();
+	}
+
+
     @Override
     public void next() {
 				incrementeDate();
@@ -103,20 +126,10 @@ class Simulateur implements Simulable {
 
     @Override
     public void restart() {
-
-					try {
-						simData = LecteurDonnees.initData(nomDuFichier);
+						//simData = LecteurDonnees.initData(nomDuFichier);
 						this.events = new PriorityQueue<Evenement>();
-						//this.manager = new ManagerPathFind(this);
-						this.manager = new ManagerChef(this);
-						this.manager.manage();
-						dateSimulation = 0;
-						dessine();
-						} catch (FileNotFoundException e1) {
-						System.out.println("Erreur au redémarrage de la simulation.");
-						} catch (ExceptionFormatDonnees e2) {
-						System.out.println("Mauvais format de donnees.");
-						}
+						dateActuelle = 0;
+						draw();
 
     }
 
