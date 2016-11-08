@@ -1,7 +1,7 @@
 package evenements;
 import java.util.LinkedList;
-import robot;
-import terrain;
+import robot.*;
+import terrain.*;
 import java.util.*;
 
 

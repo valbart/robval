@@ -7,13 +7,15 @@ import java.util.concurrent.TimeUnit;
 
 import enumeration.NatureTerrain;
 import enumeration.Direction;
-
+import graphe.*
+;
 
 public abstract class robot {
     private boolean Busy;
 	public Case position;
     protected float debit_Vidage;
     protected int litre_Actuel;
+    private graphe graphe;
     
     public abstract int get_Vitesse(NatureTerrain terrain);
     
@@ -58,8 +60,9 @@ public abstract class robot {
 		}
 	}
     
-    public robot(Case position, float debit_Vidage, int litre_Actuel, boolean Busy) {
-	this.position=position;
+    public robot(Case position, float debit_Vidage, int litre_Actuel,graphe graphe, boolean Busy) {
+	this.graphe = graphe;
+    this.position=position;
 	this.debit_Vidage = debit_Vidage;
 	this.litre_Actuel = litre_Actuel;
 	this.Busy = Busy;
