@@ -25,9 +25,12 @@ class Simulateur implements Simulable {
 	private GUISimulator gui;
 
 	private int tailleCarre;
+ 	private long dateActuelle;
+	private PriorityQueue<Evenement> events;
 
 	public Simulateur(GUISimulator gui, DonneesSimulation data, int tailleCarre) {
 		this.gui = gui;
+		this.dateActuelle = 0;
 		gui.setSimulable(this);
 		this.data = data;
 		this.tailleCarre = tailleCarre;
@@ -94,12 +97,40 @@ class Simulateur implements Simulable {
 	}
 
 
+	/**
+	 * Ajoute des événements au simulateur.
+	 * @param e événement à ajouter au simulateur
+	 */
+public void ajouteEvenement(Evenement e){
+		this.events.add(e);
+}
+
+/**
+     * Augmente la date du simulateur.
+     */
+	private void incrementeDate(){
+		this.dateActuelle++;
+		while (this.events.peek() != null && (this.events.peek().getDate() == this.dateActuelle)) {
+			this.events.poll().execute();
+		}
+		draw();
+	}
+
+
     @Override
     public void next() {
+				incrementeDate();
+				//manager.manage();
+				System.out.println("Date de la simulation : " + dateSimulation);
     }
 
     @Override
     public void restart() {
+						//simData = LecteurDonnees.initData(nomDuFichier);
+						this.events = new PriorityQueue<Evenement>();
+						dateActuelle = 0;
+						draw();
+
     }
 
 }
