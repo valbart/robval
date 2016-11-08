@@ -96,10 +96,28 @@ class Simulateur implements Simulable {
 
     @Override
     public void next() {
+				incrementeDate();
+				//manager.manage();
+				System.out.println("Date de la simulation : " + dateSimulation);
     }
 
     @Override
     public void restart() {
+
+					try {
+						simData = LecteurDonnees.initData(nomDuFichier);
+						this.events = new PriorityQueue<Evenement>();
+						//this.manager = new ManagerPathFind(this);
+						this.manager = new ManagerChef(this);
+						this.manager.manage();
+						dateSimulation = 0;
+						dessine();
+						} catch (FileNotFoundException e1) {
+						System.out.println("Erreur au redémarrage de la simulation.");
+						} catch (ExceptionFormatDonnees e2) {
+						System.out.println("Mauvais format de donnees.");
+						}
+
     }
 
 }
