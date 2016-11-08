@@ -10,7 +10,7 @@ import enumeration.Direction;
 
 
 public abstract class robot {
-    
+    private boolean Busy;
 	public Case position;
     protected float debit_Vidage;
     protected int litre_Actuel;
@@ -29,6 +29,14 @@ public abstract class robot {
 	return this.position;
     }
     
+    
+    public boolean isBusy() {
+    	return this.Busy;
+    }
+    
+    public void setBusy(boolean b) {
+    	this.Busy = b ;
+    }
     
 	public void avancer(Direction x, Carte carte) {
 		Case caseActuelle = this.get_Position();
@@ -50,10 +58,11 @@ public abstract class robot {
 		}
 	}
     
-    public robot(Case position, float debit_Vidage, int litre_Actuel) {
+    public robot(Case position, float debit_Vidage, int litre_Actuel, boolean Busy) {
 	this.position=position;
 	this.debit_Vidage = debit_Vidage;
 	this.litre_Actuel = litre_Actuel;
+	this.Busy = Busy;
     }
     
 }

@@ -36,7 +36,7 @@ public abstract class robot_Reservoir extends robot {
 
 	public robot_Reservoir(Case position, float debit_Vidage, int litre_Actuel, int capacite_Reservoir,
 			float debit_Remplissage) {
-		super(position, debit_Vidage, litre_Actuel);
+		super(position, debit_Vidage, litre_Actuel, false);
 		this.capacite_Reservoir = capacite_Reservoir;
 		this.debit_Remplissage = debit_Remplissage;
 	}

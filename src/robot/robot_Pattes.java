@@ -9,7 +9,7 @@ import enumeration.NatureTerrain;
 public class robot_Pattes extends robot {
 
 	public robot_Pattes(Case position) {
-		super(position, (float) 10, 10000000);
+		super(position, (float) 10, 10000000, false);
 	}
 
 	public void deverser_Eau(int volume, incendie feu) {
