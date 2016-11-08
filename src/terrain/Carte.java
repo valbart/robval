@@ -56,6 +56,8 @@ public class Carte {
 		return !((i == 0 && dir == Direction.NORD) || (j == 0 && dir == Direction.OUEST)
 				|| (i == nbLigne-1 && dir == Direction.SUD) || (j == nbColonne-1 && dir == Direction.EST));
 	}
+	 
+	
 	
 	/* si la case voisine de la case (i,j) dans la direction dir est dans la carte alors cette case est 
 	   renvoyée, sinon la case (i,j) est renvoyée */

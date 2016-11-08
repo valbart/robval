@@ -17,6 +17,10 @@ public abstract class robot {
     protected int litre_Actuel;
     private graphe graphe;
     
+    public int getLitre() {
+    	return this.litre_Actuel;
+    }
+    
     public abstract int get_Vitesse(NatureTerrain terrain);
     
     public abstract void deverser_Eau(int volume, incendie feu);

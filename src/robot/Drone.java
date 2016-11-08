@@ -7,12 +7,12 @@ import java.util.concurrent.TimeUnit;
 import java.io.*;
 import enumeration.NatureTerrain;
 import enumeration.Direction;
-
+import graphe.*;
 
 public class Drone extends robot_Reservoir {
 	
-	public Drone(Case position) {
-		super(position, (float) 333.333, 10000, 10000, (float) 5.555);
+	public Drone(Case position, graphe Graphe) {
+		super(position, (float) 333.333, 10000, 10000, (float) 5.555, Graphe);
 	}
 	
 	public int get_Vitesse(NatureTerrain terrain) {

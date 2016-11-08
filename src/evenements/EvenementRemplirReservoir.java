@@ -10,21 +10,16 @@ import java.util.*;
  */
 public class EvenementRemplirReservoir extends Evenement {
 	private Carte carte;
-	private Robot robot;
+	private robot robot;
 
-	public EvenementRemplirReservoir(long date, Carte map, Robot robotARemplir){
+	public EvenementRemplirReservoir(long date, Carte map, robot robotARemplir){
 		super(date);
 		this.carte = map;
 		this.robot = robotARemplir;
 	}
 
 	public void execute(){
-		if (robot.litre_Actuel() < robot.capacite_Reservoir()) {
 			this.robot.remplissage(carte);
-        }
-		else {
-			System.out.println(robot.getClass() + "est plein !");
-			return;
-		}
 	}
+
 }

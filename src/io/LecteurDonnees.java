@@ -55,16 +55,16 @@ public class LecteurDonnees {
     	robot newRobot;
     	switch(S) {
     	case "DRONE":
-    		newRobot = new Drone(pos);
+    		newRobot = new Drone(pos, null);
     		break;
     	case "CHENILLES": 
-    		newRobot = new robot_Chenille(pos);
+    		newRobot = new robot_Chenille(pos, null);
     		break;
     	case "PATTES":
-    		newRobot = new robot_Pattes(pos);
+    		newRobot = new robot_Pattes(pos, null);
     		break;
     	case "ROUES":
-    		newRobot = new robot_Roues(pos);
+    		newRobot = new robot_Roues(pos, null);
     		break;
     	default:
     			throw new DataFormatException("Robot inconnu : carte invalide");

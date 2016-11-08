@@ -9,7 +9,10 @@ import io.DonneesSimulation;
 import io.LecteurDonnees;
 
 import graphe.*;
+import enumeration.Direction;
 import enumeration.TypeRobot;
+import evenements.*;
+import robot.*;
 
 public class TestSimulateur {
     public static void main(String[] args) {
@@ -55,8 +58,18 @@ public class TestSimulateur {
         //*/
         
         
+        
         GUISimulator gui = new GUISimulator(longueurGui+100, largeurGui+100, Color.WHITE);
         
         Simulateur simu = new Simulateur(gui, data, tailleCarre);
+        robot RobotTest = data.robots[0];
+        Evenement e1 = new EvenementDeplacement(1,data.carte,RobotTest,Direction.NORD);
+        Evenement e2 = new EvenementDeplacement(2,data.carte,RobotTest,Direction.NORD);
+        Evenement e3 = new EvenementDeplacement(3,data.carte,RobotTest,Direction.EST);
+        Evenement e4 = new EvenementDeplacement(4,data.carte,RobotTest,Direction.NORD);
+        simu.ajouteEvenement(e1);
+        simu.ajouteEvenement(e2);
+        simu.ajouteEvenement(e3);
+        simu.ajouteEvenement(e4);
     }
 }

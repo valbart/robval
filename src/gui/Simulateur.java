@@ -17,7 +17,8 @@ import gui.GUISimulator;
 import gui.Rectangle;
 import gui.Simulable;
 import gui.Text;
-
+import evenements.*;
+import java.util.*;
 class Simulateur implements Simulable {
 
 	private DonneesSimulation data;
@@ -34,6 +35,7 @@ class Simulateur implements Simulable {
 		gui.setSimulable(this);
 		this.data = data;
 		this.tailleCarre = tailleCarre;
+		this.events = new PriorityQueue<Evenement>();
 		draw();
 	}
 
@@ -112,6 +114,7 @@ public void ajouteEvenement(Evenement e){
 		this.dateActuelle++;
 		while (this.events.peek() != null && (this.events.peek().getDate() == this.dateActuelle)) {
 			this.events.poll().execute();
+			System.out.println("Ulric le genie");
 		}
 		draw();
 	}
@@ -121,7 +124,7 @@ public void ajouteEvenement(Evenement e){
     public void next() {
 				incrementeDate();
 				//manager.manage();
-				System.out.println("Date de la simulation : " + dateSimulation);
+				System.out.println("Date de la simulation : " + this.dateActuelle);
     }
 
     @Override

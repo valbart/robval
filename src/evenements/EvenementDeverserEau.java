@@ -9,11 +9,11 @@ import java.util.*;
  * 	(en versant un débit d'eau qui lui est propre).
  */
 public class EvenementDeverserEau extends Evenement {
-	private Robot robot;
-	private LinkedList<Incendie> listeIncendies;
-	private Incendie incendie;
+	private robot robot;
+	private LinkedList<incendie> listeIncendies;
+	private incendie incendie;
 
-	public EvenementDeverserEau(long date, Robot robotAVider, LinkedList<Incendie> listeDIncendies, Incendie incendieAEteindre){
+	public EvenementDeverserEau(long date, robot robotAVider, LinkedList<incendie> listeDIncendies, incendie incendieAEteindre){
 		super(date);
 		this.robot = robotAVider;
 		this.listeIncendies = listeDIncendies;
@@ -21,7 +21,7 @@ public class EvenementDeverserEau extends Evenement {
 	}
 
 	public void execute(){
-		int eau = (this.robot.litre_Actuel() <= this.incendie.intensite)?this.litre_Actuel:this.incendie.intensite;
+		int eau = (this.robot.getLitre() <= this.incendie.getIntensite()) ? this.robot.getLitre() : this.incendie.getIntensite();
 		//int eau = this.robot.litre_Actuel();
 		robot.setBusy(true);
     this.robot.deverser_Eau(eau, this.incendie);

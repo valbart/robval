@@ -7,12 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import enumeration.NatureTerrain;
 import enumeration.Direction;
-
+import graphe.*;
 
 public class robot_Roues extends robot_Reservoir {
 
-	public robot_Roues(Case position) {
-		super(position, (float) 20.0, 5000, 5000, (float) 8.3);
+	public robot_Roues(Case position, graphe Graphe) {
+		super(position, (float) 20.0, 5000, 5000, (float) 8.3, Graphe);
 	}
 
 	public void remplissage(Carte carte) {

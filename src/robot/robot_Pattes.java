@@ -5,11 +5,12 @@ import terrain.incendie;
 import terrain.Case;
 import java.io.*;
 import enumeration.NatureTerrain;
+import graphe.*;
 
 public class robot_Pattes extends robot {
 
-	public robot_Pattes(Case position) {
-		super(position, (float) 10, 10000000, false);
+	public robot_Pattes(Case position, graphe Graphe) {
+		super(position, (float) 10, 10000000, Graphe, false);
 	}
 
 	public void deverser_Eau(int volume, incendie feu) {

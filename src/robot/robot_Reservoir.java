@@ -1,6 +1,7 @@
 package robot;
 
 import terrain.incendie;
+import graphe.*;
 import terrain.Case;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
@@ -35,8 +36,8 @@ public abstract class robot_Reservoir extends robot {
 	}
 
 	public robot_Reservoir(Case position, float debit_Vidage, int litre_Actuel, int capacite_Reservoir,
-			float debit_Remplissage) {
-		super(position, debit_Vidage, litre_Actuel, false);
+			float debit_Remplissage, graphe Graphe) {
+		super(position, debit_Vidage, litre_Actuel, Graphe, false);
 		this.capacite_Reservoir = capacite_Reservoir;
 		this.debit_Remplissage = debit_Remplissage;
 	}

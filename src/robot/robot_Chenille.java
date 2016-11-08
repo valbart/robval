@@ -6,11 +6,12 @@ import terrain.Case;
 import java.io.*;
 import enumeration.NatureTerrain;
 import enumeration.Direction;
+import graphe.*;
 
 public class robot_Chenille extends robot_Reservoir {
 	
-	public robot_Chenille(Case position) {
-		super(position, (float) 12.5, 2000, 2000, (float) 6.66);
+	public robot_Chenille(Case position, graphe Graphe) {
+		super(position, (float) 12.5, 2000, 2000, (float) 6.66, Graphe);
 	}
 
 	public void remplissage(Carte carte) {
