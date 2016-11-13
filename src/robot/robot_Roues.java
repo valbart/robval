@@ -1,8 +1,6 @@
 package robot;
 import terrain.incendie;
-import evenements.*;
 import terrain.*;
-import gui.*;
 import enumeration.*;
 import graphe.*;
 
@@ -30,5 +28,12 @@ public class robot_Roues extends robot_Reservoir {
 			return (0);
 		}
 	}
+	
+
+	public void deverser_Eau(incendie feu) {
+		System.out.println("Le robot a roue intervient...");
+		super.deverser_Eau(feu);
+	}
+
 	
 }

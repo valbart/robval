@@ -1,12 +1,10 @@
 package evenements;
-import java.util.LinkedList;
 import robot.*;
 import terrain.*;
-import java.util.*;
 
 /**
- * Evenement de remplissage d'un robot
- * 	(par un dÃ©bit qui lui est propre).
+ * Evénement de remplissage d'un robot.
+ * 	
  */
 public class EvenementRemplirReservoir extends Evenement {
 	private Carte carte;

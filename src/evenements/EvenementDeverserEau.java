@@ -2,11 +2,12 @@ package evenements;
 import java.util.LinkedList;
 import robot.*;
 import terrain.*;
-import java.util.*;
+
 import gui.*;
+
 /**
- * Evenement gÃ©rant le fait qu'un robot Ã©teigne un feu
- * 	(en versant un dÃ©bit d'eau qui lui est propre).
+ * Evenement lié à l'exctinction d'un feu par un robot.
+ * 
  */
 public class EvenementDeverserEau extends Evenement {
 	private robot robot;
@@ -24,17 +25,26 @@ public class EvenementDeverserEau extends Evenement {
 		this.carte = carte;
 		this.simu = simu;
 	}
-
+	
+/**
+ * Ordonne au robot lié à l'évènement de deverser de l'eau sur un incendie.
+ * Si le robot n'a plus d'eau, cet évènement l'envoie se remplir.
+ */
 	public void execute(){
 		robot.setBusy(true);
-		if (robot.getLitre() != 0 && this.incendie.getIntensite() > 0) {
+		if (robot.getLitre() > 0 && this.incendie.getIntensite() > 0) {
 			this.robot.deverser_Eau(this.incendie);
 		}
-
-
 		if (this.incendie.getIntensite() <= 0) {
+			System.out.println("Le feu (" + this.incendie.getPosition().getLigne() + "," + this.incendie.getPosition().getColonne() + ") est éteind");
 			listeIncendies.remove(this.incendie);
+			this.robot.setBusy(false);
+		} else if (this.robot.getLitre() > 0) {
+			this.simu.ajouteEvenement(new EvenementDeverserEau(this.date+1, this.robot, this.listeIncendies, this.incendie, this.carte, this.simu));
+		} else {
+			this.robot.trouveCheminEau(this.carte, this.simu);
+			this.incendie.enCourExctinction = false;
 		}
-		this.robot.setBusy(false);
+
 	}
 }

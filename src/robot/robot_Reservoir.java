@@ -1,20 +1,12 @@
 package robot;
-
 import terrain.incendie;
-import graphe.*;
-import gui.Simulateur;
 import terrain.Case;
-import java.io.*;
-import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
-
 import terrain.Carte;
-import enumeration.NatureTerrain;
-import evenements.EvenementDeplacement;
-import exceptions.PasDeCheminException;
-import enumeration.Direction;
 
-
+/**
+ * Classe des robots avec réservoir : on ajoute une capacité de reservoir et un temps de remplissage.
+ */
 public abstract class robot_Reservoir extends robot {
 	
 	protected int capacite_Reservoir;
@@ -23,7 +15,7 @@ public abstract class robot_Reservoir extends robot {
 	public robot_Reservoir(Case position) {
 		super(position);
 	}
-	
+
 	public void remplissage(Carte carte) {
 		this.litre_Actuel = this.capacite_Reservoir;
 		try {

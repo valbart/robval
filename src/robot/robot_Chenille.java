@@ -1,17 +1,9 @@
 package robot;
-
 import terrain.incendie;
 import terrain.Carte;
 import terrain.Case;
-import java.io.*;
 import enumeration.NatureTerrain;
-import evenements.EvenementRemplirReservoir;
-import enumeration.Direction;
 import graphe.*;
-import gui.Simulateur;
-import evenements.*;
-import terrain.*;
-import gui.*;
 
 public class robot_Chenille extends robot_Reservoir {
 	
@@ -39,4 +31,11 @@ public class robot_Chenille extends robot_Reservoir {
 		}
 	}
 		
+
+	public void deverser_Eau(incendie feu) {
+		System.out.println("Le robot chenille intervient...");
+		super.deverser_Eau(feu);
+	}
+
+	
 }

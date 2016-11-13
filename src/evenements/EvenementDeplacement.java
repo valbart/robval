@@ -1,13 +1,12 @@
 package evenements;
-import java.util.LinkedList;
 
 import enumeration.Direction;
 import robot.*;
 import terrain.*;
-import java.util.*;
+
 
 /**
- * Evenement gÃ©rant le dÃ©placement d'un robot selon son type.
+ * Evénement de déplacement d'un robot.
  */
 public class EvenementDeplacement extends Evenement {
 	private Carte carte;

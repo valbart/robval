@@ -1,14 +1,11 @@
 package terrain;
 import terrain.Case;
-
-import java.util.LinkedList;
-
 import enumeration.*;
-import graphe.sommet;
-import io.DonneesSimulation;
 
-
-
+/**
+ * Classe des cartes des simulation : une carte est une matrice de case définie par sa longueur, sa largeur, et la taille réelles des cases
+ *
+ */
 public class Carte {
 	
 	private Case[][] map;
@@ -55,8 +52,12 @@ public class Carte {
 	}
 	
 	
-	/* checkDir(i, j, dir) renvoie TRUE ssi on ne sort pas de la carte en allant
-	 * dans la direction dir depuis la case de coordonnée (i,j) */
+	/** Donne si oui on on on peut se déplacer selon la direction dir depuis la case (i,j)
+	 * @param i
+	 * @param j
+	 * @param dir
+	 * @return un booleen qui vaut true ssi on ne sort pas de la carte en effectuant ce déplacement.
+	 */
 	public Boolean checkDir(int i, int j, Direction dir) {
 		return !((i == 0 && dir == Direction.NORD) || (j == 0 && dir == Direction.OUEST)
 				|| (i == nbLigne-1 && dir == Direction.SUD) || (j == nbColonne-1 && dir == Direction.EST));
@@ -64,8 +65,13 @@ public class Carte {
 	 
 	
 	
-	/* si la case voisine de la case (i,j) dans la direction dir est dans la carte alors cette case est 
-	   renvoyée, sinon la case (i,j) est renvoyée */
+	/**
+	 * Renvoie la case voisine de la case (i,j) dans la direction dir
+	 * @param i
+	 * @param j
+	 * @param dir
+	 * @return la case voisine de la case (i,j) dans la direction dir.
+	 */
 	public Case getVoisin(int i, int j, Direction dir) {
 		int newI = i;
 		int newJ = j;
@@ -93,7 +99,12 @@ public class Carte {
 		return this.map[newI][newJ];
 	}
 	
-	
+	/**
+	 * Indique si la case (i,j) a une des cases qui l'entoure qui est constituée d'eau.
+	 * @param i
+	 * @param j
+	 * @return un booleen valant true ssi il existe un voisin de la case (i,j) qui a pour nature l'eau. 
+	 */
 	public boolean estPretEau(int i, int j){
 		boolean b = false;
 		for (Direction dir : Direction.values()) {

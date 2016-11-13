@@ -1,16 +1,10 @@
 package gui;
-
 import robot.*;
 import terrain.*;
 import enumeration.*;
-
 import java.awt.Color;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.zip.DataFormatException;
-
 import io.DonneesSimulation;
 import io.LecteurDonnees;
 import gui.GUISimulator;
@@ -19,26 +13,57 @@ import gui.Simulable;
 import gui.Text;
 import evenements.*;
 import java.util.*;
+import gui.ChefPompier;
+
+/**
+ * Le simulateur gère l'affichage graphique, l'ordonancement et l'execution des évènements.
+ * Le simulateur implémente l'interface Simulable définie dans l'archive gui.jar. Il est définit par : 
+ * <ul>
+ * <li>L'ensembles des données de la simulation</li>
+ * <li>Un objet GuiSimulator le liant à l'interface graphique</li>
+ * <li>Un entier définissant la taille du quadrillage de la carte</li>
+ * <li>Un long donnant la date actuelle de la simulation</li>
+ * <li>Un ChefPompier définissant la stratégie à adopter</li>
+ * <li>Une chaine de caractère donnant le nom du fichier contenant les données du problèmes </li>
+ * </ul>
+ */
+
 public class Simulateur implements Simulable {
 
 	private DonneesSimulation data;
-
 	private GUISimulator gui;
-
 	private int tailleCarre;
  	private long dateActuelle;
 	private PriorityQueue<Evenement> events;
+	private ChefPompier Chef;
+	private String fichier;
 
-	public Simulateur(GUISimulator gui, DonneesSimulation data, int tailleCarre) {
+	public Simulateur(GUISimulator gui, DonneesSimulation data, int tailleCarre, String fichier) {
 		this.gui = gui;
 		this.dateActuelle = 0;
 		gui.setSimulable(this);
-		this.data = data;
 		this.tailleCarre = tailleCarre;
 		this.events = new PriorityQueue<Evenement>();
-		draw();
+		this.Chef = new ChefPompier();
+		this.data = new DonneesSimulation(); 
+		this.fichier = fichier;
+		this.initData();
 	}
 
+	/**
+	 * Lit les données du problèmes et les enregistres dans le champ data de l'objet.
+	 */
+	public void initData() {
+        try {
+            LecteurDonnees.lire(this.fichier, this.data);
+    		draw();
+        } catch (FileNotFoundException e) {
+            System.out.println("fichier " + fichier + " inconnu ou illisible");
+        } catch (DataFormatException e) {
+            System.out.println("\n\t**format du fichier " + fichier + " invalide: " + e.getMessage());
+        }
+	}
+	
 	public long getDateActuelle() {
 		return this.dateActuelle;
 	}
@@ -64,7 +89,7 @@ public class Simulateur implements Simulable {
 	}
 
 
-	// POUR LES FONCTIONS DESSINS : ON A TOUT DECALER SELON UN VEC (tailleCarre,tailleCarr) SINON LA MAP SORT DE LA FENETRE
+	
 	private void drawCase(Case c) {
 		int i = c.getLigne();
 		int j = c.getColonne();
@@ -104,15 +129,15 @@ public class Simulateur implements Simulable {
 
 
 	/**
-	 * Ajoute des Ã©vÃ©nements au simulateur.
-	 * @param e Ã©vÃ©nement Ã  ajouter au simulateur
+	 * Ajoute un événement au simulateur.
+	 * @param e événement à ajouter au simulateur.
 	 */
-public void ajouteEvenement(Evenement e){
+	public void ajouteEvenement(Evenement e){
 		this.events.add(e);
-}
+	}
 
-/**
-     * Augmente la date du simulateur.
+	/**
+     * Incrémente la date de la simulation et éxecute tout les évènements de la nouvelle date. 
      */
 	private void incrementeDate(){
 		this.dateActuelle++;
@@ -122,22 +147,25 @@ public void ajouteEvenement(Evenement e){
 		draw();
 	}
 
-
+	/**
+	 * Incrémente la date et organise la stratégie.
+	 */
     @Override
     public void next() {
-				incrementeDate();
-				//manager.manage();
-				//System.out.println("Date de la simulation : " + this.dateActuelle);
-				System.out.println("Il reste " + this.events.size() + " évènements.");
+		incrementeDate();
+		this.Chef.organise(this, this.data);
+		System.out.println("Date de la simulation : " + this.dateActuelle);
     }
-
+    
+    /**
+     * Redémarre la simulation depuis le début. 
+     */
     @Override
     public void restart() {
-						//simData = LecteurDonnees.initData(nomDuFichier);
-						this.events = new PriorityQueue<Evenement>();
-						dateActuelle = 0;
-						draw();
-
+		this.dateActuelle = 0;
+		this.events = new PriorityQueue<Evenement>();
+		this.data = new DonneesSimulation(); 
+		this.initData();
     }
 
 }

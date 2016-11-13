@@ -1,16 +1,10 @@
 package robot;
-
 import terrain.incendie;
 import terrain.Carte;
 import terrain.Case;
-import java.util.concurrent.TimeUnit;
-import java.io.*;
 import enumeration.NatureTerrain;
-import enumeration.Direction;
 import graphe.*;
-import evenements.*;
-import terrain.*;
-import gui.*;
+
 
 public class Drone extends robot_Reservoir {
 	
@@ -25,7 +19,6 @@ public class Drone extends robot_Reservoir {
 	}
 	
 	
-	
 	public int get_Vitesse(NatureTerrain terrain) {
 		return (100);
 	}
@@ -36,4 +29,10 @@ public class Drone extends robot_Reservoir {
 	}
 	
 
+	public void deverser_Eau(incendie feu) {
+		System.out.println("Le drone intervient...");
+		super.deverser_Eau(feu);
+	}
+
+	
 }

@@ -1,5 +1,9 @@
 package terrain;
 
+/**
+ * Classe des incendies définie par une position, une intensité (en litre d'eau nécessaire pour l'exctinction) et un statut : en cours d'extinction par un robot ou non.
+ *
+ */
 public class incendie {
 	
 	private Case position;

@@ -1,5 +1,8 @@
 package graphe;
-
+/**
+ * Classe représentant les sommets de notre graphe simplement décris par un couple d'entier. 
+ *
+ */
 public class sommet {
 	private int i;
 	private int j;

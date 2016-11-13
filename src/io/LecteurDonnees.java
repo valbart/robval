@@ -1,11 +1,8 @@
 package io;
 import terrain.*;
-import terrain.Carte;
-
 import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
-
 import enumeration.NatureTerrain;
 import enumeration.TypeRobot;
 import robot.*;
@@ -13,34 +10,15 @@ import graphe.*;
 
 
 /**
- * Lecteur de cartes au format spectifiÃ© dans le sujet.
- * Les donnÃ©es sur les cases, robots puis incendies sont lues dans le fichier,
- * puis simplement affichÃ©es.
- * A noter: pas de vÃ©rification sÃ©mantique sur les valeurs numÃ©riques lues.
- *
- * IMPORTANT:
- *
- * Cette classe ne fait que LIRE les infos et les afficher.
- * A vous de modifier ou d'ajouter des mÃ©thodes, inspirÃ©es de celles prÃ©sentes
- * (ou non), qui CREENT les objets au moment adÃ©quat pour construire une
- * instance de la classe DonneesSimulation Ã  partir d'un fichier.
- *
- * Vous pouvez par exemple ajouter une mÃ©thode qui crÃ©e et retourne un objet
- * contenant toutes les donnÃ©es lues:
- *    public static DonneesSimulation creeDonnees(String fichierDonnees);
- * Et faire des mÃ©thode creeCase(), creeRobot(), ... qui lisent les donnÃ©es,
- * crÃ©ent les objets adÃ©quats et les ajoutent ds l'instance de
- * DonneesSimulation.
+ * Lecteur de cartes.
+ * Les données sur les cases, robots puis incendies sont lues dans le fichier,
+ * et enregistrées dans un objet de type DonneesSimulation
  */
+
 public class LecteurDonnees {
-
-
     /**
-     * Lit et affiche le contenu d'un fichier de donnees (cases,
-     * robots et incendies).
-     * Ceci est mÃ©thode de classe; utilisation:
-     * LecteurDonnees.lire(fichierDonnees)
-     * @param fichierDonnees nom du fichier Ã  lire
+     * Lit et et enregistre le contenu d'un fichier de donnees
+     * @param fichierDonnees nom du fichier à lire
      */
     public static void lire(String fichierDonnees, DonneesSimulation data)
         throws FileNotFoundException, DataFormatException {
@@ -54,6 +32,14 @@ public class LecteurDonnees {
         System.out.println("\n == Lecture terminee");
     }
     
+    /**
+     * 
+     * @param S chaine contenant le type du robot à instancier
+     * @param pos la position initiale du robot
+     * @param data l'objet ou sont enregistrées les données
+     * @return un robot du type spécifié dans la chaine S
+     * @throws DataFormatException
+     */
     private robot parseType(String S, Case pos, DonneesSimulation data) throws DataFormatException {
     	robot newRobot;
     	switch(S) {
@@ -74,7 +60,11 @@ public class LecteurDonnees {
     	}
     	return newRobot;
     }
-
+    
+    /** Associe un entier à chaque type de robot
+     * @param type type de robot
+     * @return l'entier associé
+     */
 	private int typeToInt(TypeRobot type) {
 		int i = 0;
 		switch(type) {
@@ -93,13 +83,10 @@ public class LecteurDonnees {
 		}
 		return i;
 	}
-	
-    // Tout le reste de la classe est prive!
 
     private static Scanner scanner;
 
     /**
-     * Constructeur prive; impossible d'instancier la classe depuis l'exterieur
      * @param fichierDonnees nom du fichier a lire
      */
     private LecteurDonnees(String fichierDonnees)
@@ -109,7 +96,8 @@ public class LecteurDonnees {
     }
 
     /**
-     * Lit et affiche les donnees de la carte.
+     * Lit, initialise la carte et enregistre les données de la carte.
+     * @param data objet où sont enregistrés les donéees.
      * @throws ExceptionFormatDonnees
      */
     private void lireCarte(DonneesSimulation data) throws DataFormatException {
@@ -121,9 +109,8 @@ public class LecteurDonnees {
             int nbColonnes = scanner.nextInt();
             data.carte.setNbColonne(nbColonnes);
             
-            int tailleCases = scanner.nextInt();	// en m
-            System.out.println("Carte " + nbLignes + "x" + nbColonnes
-                    + "; taille des cases = " + tailleCases);
+            int tailleCases = scanner.nextInt();
+            
             data.carte.setTailleCase(tailleCases);
             
             data.carte.setMap();
@@ -138,43 +125,32 @@ public class LecteurDonnees {
             throw new DataFormatException("Format invalide. "
                     + "Attendu: nbLignes nbColonnes tailleCases");
         }
-        // une ExceptionFormat levee depuis lireCase est remontee telle quelle
     }
 
 
 
 
     /**
-     * Lit et affiche les donnees d'une case.
+     * Lit et enregistre les données d'une case de la carte.
      */
     private void lireCase(int lig, int col, DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
         System.out.print("Case (" + lig + "," + col + "): ");
         String chaineNature = new String();
-        //		NatureTerrain nature;
-
         try {
             chaineNature = scanner.next();
-            // si NatureTerrain est un Enum, vous pouvez recuperer la valeur
-            // de l'enum a partir d'une String avec:
-            //			NatureTerrain nature = NatureTerrain.valueOf(chaineNature);
-
             verifieLigneTerminee();
-
-            System.out.print("nature = " + chaineNature);
             data.carte.setCaseMap(lig, col, NatureTerrain.valueOf(chaineNature));
             
         } catch (NoSuchElementException e) {
             throw new DataFormatException("format de case invalide. "
                     + "Attendu: nature altitude [valeur_specifique]");
         }
-
-        System.out.println();
     }
 
 
     /**
-     * Lit et affiche les donnees des incendies.
+     * Lit et enregistre les donnees des incendies.
      */
     private void lireIncendies(DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
@@ -195,13 +171,11 @@ public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche les donnees du i-eme incendie.
+     * Lit et enregistre les données du i-ème incendie.
      * @param i
      */
     private void lireIncendie(int i, DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
-        System.out.print("Incendie " + i + ": ");
-
         try {
             int lig = scanner.nextInt();
             int col = scanner.nextInt();
@@ -211,12 +185,7 @@ public class LecteurDonnees {
                         + "nb litres pour eteindre doit etre > 0");
             }
             data.incendies.add(new incendie(data.carte.getCase(lig, col), intensite));
-            
             verifieLigneTerminee();
-
-            System.out.println("position = (" + lig + "," + col
-                    + ");\t intensite = " + intensite);
-
         } catch (NoSuchElementException e) {
             throw new DataFormatException("format d'incendie invalide. "
                     + "Attendu: ligne colonne intensite");
@@ -225,14 +194,13 @@ public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche les donnees des robots.
+     * Lit et enregistre les donnees des robots.
      */
     private void lireRobots(DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
         try {
             int nbRobots = scanner.nextInt();
             data.setRobots(nbRobots);
-            System.out.println("Nb de robots = " + nbRobots);
             for (int i = 0; i < nbRobots; i++) {
                 lireRobot(i,data);
             }
@@ -245,48 +213,39 @@ public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche les donnees du i-eme robot.
+     * Lit et enregistre les donnees du i-eme robot.
+     * Si un robot d'un nouveau type (non encore instancié sur la carte) est détecté, alors génère et enregistre le graphe associé à ce type de robot.
      * @param i
      */
     private void lireRobot(int i, DonneesSimulation data) throws DataFormatException {
         ignorerCommentaires();
-        System.out.print("Robot " + i + ": ");
-
         try {
             int lig = scanner.nextInt();
             int col = scanner.nextInt();
-            System.out.print("position = (" + lig + "," + col + ");");
-            Case posRobot = data.carte.getCase(lig, col);
-            
+            Case posRobot = data.carte.getCase(lig, col);        
             String type = scanner.next();
             int typeInt = typeToInt(TypeRobot.valueOf(type));
+            
             if (data.graphes[typeInt] == null) {
             	graphe g  = new graphe(data.carte.nbLigne, data.carte.nbColonne);
             	g.creerGraphe(data.carte, TypeRobot.valueOf(type));
             	data.setGraphe(typeInt,g);
             }
-            
-            
+                      
             robot robot = parseType(type,posRobot,data);           
-            System.out.print("\t type = " + type);
+
             data.robots[i] = robot;
 
             // A FAIRE : SET LA VITESSE EVENTUELLEMENT SPECIFIE
             // lecture eventuelle d'une vitesse du robot (entier)
-            System.out.print("; \t vitesse = ");
             String s = scanner.findInLine("(\\d+)");	// 1 or more digit(s) ?
             // pour lire un flottant:    ("(\\d+(\\.\\d+)?)");
 
             if (s == null) {
-                System.out.print("valeur par defaut");
             } else {
                 int vitesse = Integer.parseInt(s);
-                System.out.print(vitesse);
             }
             verifieLigneTerminee();
-
-            System.out.println();
-
         } catch (NoSuchElementException e) {
             throw new DataFormatException("format de robot invalide. "
                     + "Attendu: ligne colonne type [valeur_specifique]");
@@ -294,9 +253,9 @@ public class LecteurDonnees {
     }
 
 
-
-
-    /** Ignore toute (fin de) ligne commencant par '#' */
+    /** 
+     * Ignore toute (fin de) ligne commencant par '#' 
+     */
     private void ignorerCommentaires() {
         while(scanner.hasNext("#.*")) {
             scanner.nextLine();

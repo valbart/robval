@@ -1,5 +1,8 @@
 package graphe;
-
+/**
+ * Classe qui représente les arcs de notre graphe (orienté).
+ * Un arc est définit par un couple d'entier représentant les coordonnées du sommet auquel mène l'arc et par son coût.
+ */
 public class arc {
 	
 	private int ligneVoisin;

@@ -1,30 +1,26 @@
 package terrain;
 import enumeration.NatureTerrain;
 
-
+/**
+ * Classe définissant les cases de la carte : une abscisse, une ordonnée et la nature du terrain de la case.
+ */
 public class Case {
 	private int ligne;
 	private int colonne;
 	private NatureTerrain nature;
 	
-	
-	// Constructeur par défaut.
 	public Case() {
 		this.ligne = 0;
 		this.colonne = 0;
 		this.nature = NatureTerrain.TERRAIN_LIBRE;
 	}
 	
-	// Constructeur avec paramêtres.
 	public Case(int ligne, int colonne, NatureTerrain nature) {
 		this.ligne = ligne;
 		this.colonne = colonne;
 		this.nature = nature;
 	}
 	
-	
-	// Get uniquement pour position (une case reste à sa place), get et set pour type de terrain
-	// qui peut varier au cours de la simulation
 	
 	public int getLigne() {
 		return this.ligne;

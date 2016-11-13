@@ -1,36 +1,30 @@
 package evenements;
-import java.util.LinkedList;
-import robot.*;
-import terrain.*;
-import java.util.*;
-
+/**
+ * Classe abstraite qui d�finie les �v�nements g�n�rique.
+ * Ils sont caract�ris�s par une date d'execution et une mani�re particuli�re de s'�xecuter.
+ * 
+ */
 
 abstract public class Evenement implements Comparable<Evenement> {
-	private long date;
-	/**
-	 * Constructeur.
-	 * @param newEventDate date à laquelle l'événement devra s'éxécuter
-	 */
+	protected long date;
+
 	public Evenement(long newEventDate){
 		this.date = newEventDate;
 	}
 
-	/**
-	 * Accesseur sur la date d'éxécution de l'événement.
-	 * @return (long) date d'éxécution de l'événement
-	 */
+
 	public long getDate(){
 		return this.date;
 	}
+	
 	/**
-	 * Actions à effectuer quand la date d'éxécution de l'événement et celle du simulateur coïncident.
+	 * Action � effectuer � la date this.date
 	 */
 	abstract public void execute();
 
 		/**
-	 * Réalise l'interface Comparable et permet l'ordonnancement des événements dans une file de priorités
-	 * @param e événement à comparer avec celui appelant la méthode
-	 * @return 1 si l'événement appelant la méthode s'éxécute après le paramètre, 0 s'ils s'éxécutent simultanément, -1 sinon
+	 * Permet l'ordonnancement des �v�nements dans la file de priorit� du simulateur
+	 * @param e ordonnancement � comparer avec l'instance de la classe Evenement.
 	 */
 	public int compareTo(Evenement e){
 		if (this.date > e.getDate()) {

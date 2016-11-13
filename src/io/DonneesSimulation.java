@@ -4,6 +4,10 @@ import robot.*;
 import graphe.*;
 import java.util.*;
 
+/**
+ * Classe regroupant toutes les données de la simulation.
+ * Contient une carte, une liste d'incendies, un tableau de robot, et un tableau de 4 graphes, un par type de robot.
+ */
 public class DonneesSimulation {
 	
 	public Carte carte;

@@ -1,11 +1,8 @@
 package robot;
-
 import terrain.Carte;
 import terrain.incendie;
 import terrain.Case;
-import java.io.*;
 import java.util.concurrent.TimeUnit;
-
 import enumeration.NatureTerrain;
 import graphe.*;
 
@@ -20,6 +17,7 @@ public class robot_Pattes extends robot {
 	}
 
 	public void deverser_Eau(incendie feu) {
+		System.out.println("Le robot a patte intervient...");
 		feu.setIntensite(feu.getIntensite()-this.debit_Vidage);
 		try {
 			TimeUnit.MILLISECONDS.sleep((long)(this.temps_vidage));
