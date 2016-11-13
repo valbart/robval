@@ -8,49 +8,32 @@ import java.io.*;
 import enumeration.NatureTerrain;
 import enumeration.Direction;
 import graphe.*;
+import evenements.*;
+import terrain.*;
+import gui.*;
 
 public class Drone extends robot_Reservoir {
 	
 	public Drone(Case position, graphe Graphe) {
-		super(position, (float) 333.333, 10000, 10000, (float) 5.555, Graphe);
+		super(position);
+		this.debit_Vidage = 10000;
+		this.capacite_Reservoir = 10000;
+		this.litre_Actuel = this.capacite_Reservoir;
+		this.temps_vidage = 30;
+		this.temps_Remplissage = 30*60;
+		this.graphe = Graphe;
 	}
+	
+	
 	
 	public int get_Vitesse(NatureTerrain terrain) {
 		return (100);
 	}
 	
 	public void remplissage(Carte carte) {
-		boolean recup = false;
-		if (carte.checkDir(this.position.getLigne(), this.position.getColonne(), Direction.SUD)) {
-			if (carte.getCase(this.position.getLigne() + 1, this.position.getColonne())
-					.getNature() == NatureTerrain.EAU) {
-				set_Position(carte.getCase(this.position.getLigne() + 1, this.position.getColonne()));
-				recup = true;
-			}
-		}
-		if (carte.checkDir(this.position.getLigne(), this.position.getColonne(), Direction.NORD) && recup == false) {
-			if (carte.getCase(this.position.getLigne() - 1, this.position.getColonne())
-					.getNature() == NatureTerrain.EAU) {
-				set_Position(carte.getCase(this.position.getLigne() - 1, this.position.getColonne()));
-				recup = true;
-			}
-		}
-		if (carte.checkDir(this.position.getLigne(), this.position.getColonne(), Direction.EST) && recup == false) {
-			if (carte.getCase(this.position.getLigne(), this.position.getColonne() + 1)
-					.getNature() == NatureTerrain.EAU) {
-				set_Position(carte.getCase(this.position.getLigne(), this.position.getColonne() + 1));
-				recup = true;
-			}
-		}
-		if (carte.checkDir(this.position.getLigne(), this.position.getColonne(), Direction.SUD) && recup == false) {
-			if (carte.getCase(this.position.getLigne(), this.position.getColonne() - 1)
-					.getNature() == NatureTerrain.EAU) {
-				set_Position(carte.getCase(this.position.getLigne() + 1, this.position.getColonne() - 1));
-				recup = true;
-			}
-		}
-
-		super.remplissage(carte);
+		System.out.println("Le drone se remplie..");
+		super.remplissage(carte);		
 	}
+	
 
 }

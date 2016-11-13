@@ -2,44 +2,46 @@ package robot;
 
 import terrain.incendie;
 import graphe.*;
+import gui.Simulateur;
 import terrain.Case;
 import java.io.*;
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 import terrain.Carte;
 import enumeration.NatureTerrain;
+import evenements.EvenementDeplacement;
+import exceptions.PasDeCheminException;
 import enumeration.Direction;
 
 
 public abstract class robot_Reservoir extends robot {
 	
-	int capacite_Reservoir;
-	float debit_Remplissage;
-
+	protected int capacite_Reservoir;
+	protected float temps_Remplissage;
+	
+	public robot_Reservoir(Case position) {
+		super(position);
+	}
+	
 	public void remplissage(Carte carte) {
 		this.litre_Actuel = this.capacite_Reservoir;
 		try {
-			TimeUnit.MILLISECONDS.sleep((long)(1000.0 * this.capacite_Reservoir / this.debit_Remplissage));
+			TimeUnit.MILLISECONDS.sleep((long)(this.temps_Remplissage));
 		} catch (InterruptedException e) {
 			
 		}
 	}
 
-	public void deverser_Eau(int volume, incendie feu) {
-		feu.setIntensite(feu.getIntensite()-volume);
-		this.litre_Actuel -= volume;
+	public void deverser_Eau(incendie feu) {
+		feu.setIntensite(feu.getIntensite()-this.debit_Vidage);
+		this.litre_Actuel -= debit_Vidage;
 		try {
-			TimeUnit.MILLISECONDS.sleep((long)(1000 * volume / this.debit_Vidage));
+			TimeUnit.MILLISECONDS.sleep((long)(this.temps_vidage));
 		} catch (InterruptedException e){
 			
 		}
 	}
 
-	public robot_Reservoir(Case position, float debit_Vidage, int litre_Actuel, int capacite_Reservoir,
-			float debit_Remplissage, graphe Graphe) {
-		super(position, debit_Vidage, litre_Actuel, Graphe, false);
-		this.capacite_Reservoir = capacite_Reservoir;
-		this.debit_Remplissage = debit_Remplissage;
-	}
-
+		
 }

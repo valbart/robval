@@ -1,21 +1,25 @@
 package robot;
 import terrain.incendie;
-import terrain.Case;
-import terrain.Carte;
-import java.io.*;
-import java.util.concurrent.TimeUnit;
-
-import enumeration.NatureTerrain;
-import enumeration.Direction;
+import evenements.*;
+import terrain.*;
+import gui.*;
+import enumeration.*;
 import graphe.*;
 
 public class robot_Roues extends robot_Reservoir {
 
 	public robot_Roues(Case position, graphe Graphe) {
-		super(position, (float) 20.0, 5000, 5000, (float) 8.3, Graphe);
+		super(position);
+		this.debit_Vidage = 100;
+		this.capacite_Reservoir = 5000;
+		this.litre_Actuel = this.capacite_Reservoir;
+		this.temps_vidage = 5;
+		this.temps_Remplissage = 10*600;
+		this.graphe = Graphe;
 	}
 
 	public void remplissage(Carte carte) {
+		System.out.println("Le robot à roues se rempli..");
 		super.remplissage(carte);
 	}
 
@@ -26,4 +30,5 @@ public class robot_Roues extends robot_Reservoir {
 			return (0);
 		}
 	}
+	
 }

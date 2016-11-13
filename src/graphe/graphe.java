@@ -1,5 +1,6 @@
 package graphe;
 import java.util.*;
+import exceptions.*;
 
 import javax.print.attribute.IntegerSyntax;
 
@@ -39,23 +40,7 @@ public class graphe {
 	}
 	
 	
-	private static boolean peutAvancer(NatureTerrain nature, TypeRobot type) {
-		boolean b = true;
-		switch(type) {
-			case DRONE:
-				break;
-			case CHENILLES:
-				b = (nature != NatureTerrain.EAU && nature != NatureTerrain.ROCHE);
-				break;
-			case PATTES:
-				b =  (nature != NatureTerrain.EAU);
-				break;
-			case ROUES:
-				b  = (nature == NatureTerrain.TERRAIN_LIBRE || nature == NatureTerrain.HABITAT);
-				break;
-		}
-		return b;
-	}
+
 	
 	
 	/* On ne se préoccupe pas de savoir si
@@ -81,6 +66,56 @@ public class graphe {
 		}
 		return v;
 	}
+	
+	
+	public static boolean peutAvancer(NatureTerrain nature, TypeRobot type) {
+		boolean b = true;
+		switch(type) {
+			case DRONE:
+				break;
+			case CHENILLES:
+				b = (nature != NatureTerrain.EAU && nature != NatureTerrain.ROCHE);
+				break;
+			case PATTES:
+				b =  (nature != NatureTerrain.EAU);
+				break;
+			case ROUES:
+				b  = (nature == NatureTerrain.TERRAIN_LIBRE || nature == NatureTerrain.HABITAT);
+				break;
+		}
+		return b;
+	}
+	
+	public static Direction getDir(int iAct, int jAct, int iNew, int jNew) {
+		Direction dir = Direction.NORD;
+		if (iAct == iNew) {
+			switch(jAct-jNew) {
+				case -1 : 
+					dir = Direction.EST;
+					break;
+				case 1 : 
+					dir = Direction.OUEST;
+					break;
+				default : 
+					System.out.println("Problème calcul du chemin : impossible d'aller de la case (" + iAct + "," +
+							jAct + ") à la case (" + iNew + "," + jNew +")");					
+			} 
+		} else {
+				switch(iAct - iNew) {
+					case -1 : 
+						dir = Direction.SUD;
+						break;
+					case 1 : 
+						dir = Direction.NORD;
+						break;
+					default : System.out.println("Problème calcul du chemin : impossible d'aller de la case (" + iAct + "," +
+							jAct + ") à la case (" + iNew + "," + jNew +")");
+				}
+		}
+		return dir;
+	}
+	
+	
 	
 	/*
 	 * Pas besoin de connaitre la taille d'une case, on ne gère pas l'attente du robot ici
@@ -133,10 +168,10 @@ public class graphe {
 	
 	public sommet trouveMin(float[][] Q){
 		sommet s = new sommet(0,0);
-		float min = Q[0][0];
+		float min = Float.POSITIVE_INFINITY;
 		for (int i = 0; i < this.nbLigne; i++) {
 			for (int j = 0; j < this.nbLigne; j++) {
-				if ( Q[i][j] != -1 && Q[i][j] < min) {
+				if (Q[i][j] != -1 && Q[i][j] < min) {
 					s.setI(i);
 					s.setJ(j);
 					min = Q[i][j];
@@ -161,15 +196,21 @@ public class graphe {
 		Q[i][j] = -1;
 	}
 	
-	public LinkedList<sommet> dijkstra(sommet sDeb, sommet sFin) {
-		LinkedList<sommet> l  = new LinkedList();
+	
+	
+	public LinkedList<Direction> dijkstra(int iAct, int jAct, int iFin, int jFin) 
+			throws PasDeCheminException{
+		
+		sommet sDeb = new sommet(iAct, jAct);
+		sommet sFin = new sommet(iFin, jFin);
+		LinkedList<Direction> l  = new LinkedList();
 		float[][] Q;
 		Q = new float[this.nbLigne][this.nbColonne];
 		sommet[][] pred;
 		pred = new sommet[this.nbLigne][this.nbColonne];
 		for (int i = 0; i < this.nbLigne; i ++){
 			for (int j = 0; j < this.nbColonne; j++) {
-				Q[i][j] = (float) Integer.MAX_VALUE;
+				Q[i][j] = Float.POSITIVE_INFINITY;
 				pred[i][j] = new sommet(i,j);
 			}
 		}
@@ -178,16 +219,61 @@ public class graphe {
 		
     	while (Q[sFin.getI()][sFin.getJ()] != -1) {
 			sommet s = trouveMin(Q);
+			if (Q[s.getI()][s.getJ()] == Float.POSITIVE_INFINITY) {
+				throw new PasDeCheminException();
+			}
 			majDistance(s, Q, pred);
 		}
 
 		sommet s2 = sFin;
-		while ((s2.getJ() != sDeb.getJ()) || (s2.getI() != sDeb.getI())) {
-			l.add(s2);
-			s2 = pred[s2.getI()][s2.getJ()];
-	    	System.out.println("(" + s2.getI() + "," + s2.getJ() + ")\n");
+		sommet sPred = pred[s2.getI()][s2.getJ()];
+		do {
+			l.addFirst(getDir(sPred.getI(), sPred.getJ(), s2.getI(), s2.getJ()));
+			s2 = sPred;
+			sPred = pred[sPred.getI()][sPred.getJ()];
+		} while ((sPred.getJ() != s2.getJ()) || (sPred.getI() != s2.getI()));
+		
+		return l;
+	}
+	
+	
+	
+	public LinkedList<Direction> dijkstraEau(int iAct, int jAct, Carte c) 
+			throws PasDeCheminException{
+		
+		sommet sDeb = new sommet(iAct, jAct);
+		sommet sAct = new sommet(iAct, jAct);
+		LinkedList<Direction> l  = new LinkedList();
+		float[][] Q;
+		Q = new float[this.nbLigne][this.nbColonne];
+		sommet[][] pred;
+		pred = new sommet[this.nbLigne][this.nbColonne];
+		for (int i = 0; i < this.nbLigne; i ++){
+			for (int j = 0; j < this.nbColonne; j++) {
+				Q[i][j] = Float.POSITIVE_INFINITY;
+				pred[i][j] = new sommet(i,j);
+			}
 		}
-		System.out.println(s2.getI()+ " " + s2.getJ());
+		
+		Q[sDeb.getI()][sDeb.getJ()] = 0;
+		
+    	while (!(c.estPretEau(sAct.getI(), sAct.getJ()))) {
+			sAct = trouveMin(Q);
+			if (Q[sAct.getI()][sAct.getJ()] == Float.POSITIVE_INFINITY) {
+				throw new PasDeCheminException();
+			}
+			majDistance(sAct, Q, pred);
+		}
+
+		sommet s2 = sAct;
+		sommet sPred = pred[s2.getI()][s2.getJ()];
+		
+		do {
+			l.addFirst(getDir(sPred.getI(), sPred.getJ(), s2.getI(), s2.getJ()));
+			s2 = sPred;
+			sPred = pred[sPred.getI()][sPred.getJ()];
+		} while ( (sPred.getJ() != s2.getJ() ) || (sPred.getI() != s2.getI()) );
+
 		return l;
 	}
 	

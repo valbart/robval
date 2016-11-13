@@ -7,7 +7,9 @@ import java.util.*;
 import java.util.zip.DataFormatException;
 
 import enumeration.NatureTerrain;
+import enumeration.TypeRobot;
 import robot.*;
+import graphe.*;
 
 
 /**
@@ -44,6 +46,7 @@ public class LecteurDonnees {
         throws FileNotFoundException, DataFormatException {
         System.out.println("\n == Lecture du fichier" + fichierDonnees);
         LecteurDonnees lecteur = new LecteurDonnees(fichierDonnees);
+        data.initGraphes();
         lecteur.lireCarte(data);
         lecteur.lireIncendies(data);
         lecteur.lireRobots(data);
@@ -51,20 +54,20 @@ public class LecteurDonnees {
         System.out.println("\n == Lecture terminee");
     }
     
-    private robot parseType(String S, Case pos) throws DataFormatException {
+    private robot parseType(String S, Case pos, DonneesSimulation data) throws DataFormatException {
     	robot newRobot;
     	switch(S) {
     	case "DRONE":
-    		newRobot = new Drone(pos, null);
+    		newRobot = new Drone(pos, data.graphes[0]);
     		break;
     	case "CHENILLES": 
-    		newRobot = new robot_Chenille(pos, null);
+    		newRobot = new robot_Chenille(pos, data.graphes[1]);
     		break;
     	case "PATTES":
-    		newRobot = new robot_Pattes(pos, null);
+    		newRobot = new robot_Pattes(pos, data.graphes[3]);
     		break;
     	case "ROUES":
-    		newRobot = new robot_Roues(pos, null);
+    		newRobot = new robot_Roues(pos, data.graphes[2]);
     		break;
     	default:
     			throw new DataFormatException("Robot inconnu : carte invalide");
@@ -72,8 +75,25 @@ public class LecteurDonnees {
     	return newRobot;
     }
 
-
-
+	private int typeToInt(TypeRobot type) {
+		int i = 0;
+		switch(type) {
+		case DRONE :
+			i = 0;
+			break;
+		case CHENILLES :
+			i = 1;
+			break;
+		case PATTES : 
+			i = 3;
+			break;
+		case ROUES : 
+			i = 2;
+			break;		
+		}
+		return i;
+	}
+	
     // Tout le reste de la classe est prive!
 
     private static Scanner scanner;
@@ -161,7 +181,7 @@ public class LecteurDonnees {
         try {
             int nbIncendies = scanner.nextInt();
             System.out.println("Nb d'incendies = " + nbIncendies);
-            data.setIncendies(nbIncendies);
+            data.setIncendies();
             
             for (int i = 0; i < nbIncendies; i++) {
                 lireIncendie(i,data);
@@ -190,7 +210,7 @@ public class LecteurDonnees {
                 throw new DataFormatException("incendie " + i
                         + "nb litres pour eteindre doit etre > 0");
             }
-            data.incendies[i] = new incendie(data.carte.getCase(lig, col), intensite);
+            data.incendies.add(new incendie(data.carte.getCase(lig, col), intensite));
             
             verifieLigneTerminee();
 
@@ -239,7 +259,15 @@ public class LecteurDonnees {
             Case posRobot = data.carte.getCase(lig, col);
             
             String type = scanner.next();
-            robot robot = parseType(type,posRobot);           
+            int typeInt = typeToInt(TypeRobot.valueOf(type));
+            if (data.graphes[typeInt] == null) {
+            	graphe g  = new graphe(data.carte.nbLigne, data.carte.nbColonne);
+            	g.creerGraphe(data.carte, TypeRobot.valueOf(type));
+            	data.setGraphe(typeInt,g);
+            }
+            
+            
+            robot robot = parseType(type,posRobot,data);           
             System.out.print("\t type = " + type);
             data.robots[i] = robot;
 

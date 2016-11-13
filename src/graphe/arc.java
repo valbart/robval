@@ -5,6 +5,7 @@ public class arc {
 	private int ligneVoisin;
 	private int colonneVoisin;
 	private float cout;
+
 	
 	public arc(int i, int j, float c) {
 		this.ligneVoisin = i;

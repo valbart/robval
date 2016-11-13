@@ -4,19 +4,29 @@ import terrain.Carte;
 import terrain.incendie;
 import terrain.Case;
 import java.io.*;
+import java.util.concurrent.TimeUnit;
+
 import enumeration.NatureTerrain;
 import graphe.*;
 
 public class robot_Pattes extends robot {
 
 	public robot_Pattes(Case position, graphe Graphe) {
-		super(position, (float) 10, 10000000, Graphe, false);
+		super(position);
+		this.debit_Vidage = 10;
+		this.litre_Actuel = Integer.MAX_VALUE;
+		this.temps_vidage = 1;
+		this.graphe = Graphe;
 	}
 
-	public void deverser_Eau(int volume, incendie feu) {
-		feu.setIntensite(feu.getIntensite()-volume);
+	public void deverser_Eau(incendie feu) {
+		feu.setIntensite(feu.getIntensite()-this.debit_Vidage);
+		try {
+			TimeUnit.MILLISECONDS.sleep((long)(this.temps_vidage));
+		} catch (InterruptedException e){
+		}
 	}
-
+	
 	public void remplissage(Carte carte) {
 	}
 

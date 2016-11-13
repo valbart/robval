@@ -20,6 +20,7 @@ public class EvenementRemplirReservoir extends Evenement {
 
 	public void execute(){
 			this.robot.remplissage(carte);
+			this.robot.setBusy(false);
 	}
 
 }

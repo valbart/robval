@@ -4,6 +4,7 @@ public class incendie {
 	
 	private Case position;
 	private int intensite;
+	public boolean enCourExctinction;
 	
 	public incendie() {
 		this.intensite = 0; 
@@ -12,6 +13,7 @@ public class incendie {
 	public incendie(Case position, int intensite) {
 		this.position = position;
 		this.intensite = intensite;
+		this.enCourExctinction = false;
 	}
 	
 	public Case getPosition() {

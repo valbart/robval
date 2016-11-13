@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.*;
+import terrain.*;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.util.zip.DataFormatException;
@@ -15,6 +16,29 @@ import evenements.*;
 import robot.*;
 
 public class TestSimulateur {
+	
+	public robot trouveRobotNonOccupe(DonneesSimulation data) {
+		robot r = null;
+		for (robot rob : data.robots) {
+			if (!rob.isBusy()) {
+				r = rob; 
+				break;
+			}
+		}
+		return r;
+	}
+	
+	public incendie trouveIncendieNonGerer(DonneesSimulation data) {
+		incendie feu = null;
+		for (incendie i : data.incendies) {
+			if (!i.enCourExctinction) {
+				feu = i; 
+				break;
+			}
+		}
+		return feu;
+	}
+	
     public static void main(String[] args) {
     	
         if (args.length < 1) {
@@ -35,41 +59,48 @@ public class TestSimulateur {
         
         
         
-        int tailleCarre = 50;
+        int tailleCarre = 15;
         int longueurGui = tailleCarre*data.carte.getNbColonne();
         int largeurGui = tailleCarre*data.carte.getNbLigne();
         
-        //TEST GRAPHE
-        graphe grapheRoues = new graphe(data.carte.nbLigne, data.carte.nbColonne);
-        grapheRoues.creerGraphe(data.carte, TypeRobot.ROUES);
-        //System.out.println(grapheRoues.toString());
-        sommet sDeb = new sommet(6,5);
-        sommet sFin = new sommet(1,3);
-        System.out.println(grapheRoues.toString());
-        LinkedList<sommet> chemin = grapheRoues.dijkstra(sDeb,sFin);
-        /*TEST TROUVER CHEMIN*/
-        int nb = 0;
-        System.out.println("CHEMIN:\n");
-        for (sommet s : chemin) {
-        	System.out.println("(" + s.getI() + "," + s.getJ() + ")\n");
-        	nb+=1;
-        }
-        System.out.println(nb);
-        //*/
+        //TEST AUTO DEPLACEMENT ROBOTS
         
+
+        //
         
         
         GUISimulator gui = new GUISimulator(longueurGui+100, largeurGui+100, Color.WHITE);
         
         Simulateur simu = new Simulateur(gui, data, tailleCarre);
-        robot RobotTest = data.robots[0];
-        Evenement e1 = new EvenementDeplacement(1,data.carte,RobotTest,Direction.NORD);
-        Evenement e2 = new EvenementDeplacement(2,data.carte,RobotTest,Direction.NORD);
-        Evenement e3 = new EvenementDeplacement(3,data.carte,RobotTest,Direction.EST);
-        Evenement e4 = new EvenementDeplacement(4,data.carte,RobotTest,Direction.NORD);
-        simu.ajouteEvenement(e1);
-        simu.ajouteEvenement(e2);
-        simu.ajouteEvenement(e3);
-        simu.ajouteEvenement(e4);
+        
+       
+        //robot RobotTest = data.robots[0];
+        //RobotTest.trouveCheminEau(data.carte, simu);
+        
+        
+        
+        
+        /*STRATEGIE DE MERDE
+        while (!data.incendies.isEmpty()) {
+        	for (int i = 0; i < data.robots.length; i++) {
+        		if (!(data.robots[i].isBusy())) {
+        			if (!(data.robots[i].getLitre() <= 0)) {
+        				for (incendie feu : data.incendies) {
+        					if (!feu.enCourExctinction) {
+        						data.robots[i].trouveChemin(feu, data.incendies, data.carte, simu);
+        						feu.enCourExctinction = true;
+        					}
+        				}
+        			} else {
+        				data.robots[i].trouveCheminEau(data.carte, simu);
+        			}
+        		}
+        	}
+        }
+        */
+        
+        //STRATEGIE UN PEU MIEUX MAIS POURRIE QUAND MEME
+        
+        
     }
 }

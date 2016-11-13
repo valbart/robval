@@ -25,4 +25,8 @@ public class sommet {
 		this.j = J;
 	}
 	
+	public String toString() {
+		return "(" + this.i + "," + this.j +")";
+	}
+	
 }

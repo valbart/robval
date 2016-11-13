@@ -1,6 +1,11 @@
 package terrain;
 import terrain.Case;
+
+import java.util.LinkedList;
+
 import enumeration.*;
+import graphe.sommet;
+import io.DonneesSimulation;
 
 
 
@@ -87,6 +92,21 @@ public class Carte {
 		
 		return this.map[newI][newJ];
 	}
+	
+	
+	public boolean estPretEau(int i, int j){
+		boolean b = false;
+		for (Direction dir : Direction.values()) {
+			if (checkDir(i,j,dir)) {
+				if (this.getVoisin(i, j, dir).getNature() == NatureTerrain.EAU) {
+					b = true;
+				}
+			}
+		}
+		return b;
+	}
+	
+	
 	
 	public String toString() {
 		String c = "";

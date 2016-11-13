@@ -19,7 +19,7 @@ import gui.Simulable;
 import gui.Text;
 import evenements.*;
 import java.util.*;
-class Simulateur implements Simulable {
+public class Simulateur implements Simulable {
 
 	private DonneesSimulation data;
 
@@ -39,6 +39,10 @@ class Simulateur implements Simulable {
 		draw();
 	}
 
+	public long getDateActuelle() {
+		return this.dateActuelle;
+	}
+	
 	private Color getColorCase(Case c) {
 		NatureTerrain n = c.getNature();
 		Color couleur = Color.WHITE;
@@ -90,8 +94,8 @@ class Simulateur implements Simulable {
         		this.drawCase(this.data.carte.getCase(i, j));
         	}
         }
-        for (int i = 0; i < this.data.incendies.length; i++) {
-        	this.drawIncendie(this.data.incendies[i]);
+        for (incendie i: this.data.incendies) {
+        	this.drawIncendie(i);
         }
         for (int j = 0; j < this.data.robots.length; j++) {
         	this.drawRobot(this.data.robots[j]);
@@ -114,7 +118,6 @@ public void ajouteEvenement(Evenement e){
 		this.dateActuelle++;
 		while (this.events.peek() != null && (this.events.peek().getDate() == this.dateActuelle)) {
 			this.events.poll().execute();
-			System.out.println("Ulric le genie");
 		}
 		draw();
 	}
@@ -124,7 +127,8 @@ public void ajouteEvenement(Evenement e){
     public void next() {
 				incrementeDate();
 				//manager.manage();
-				System.out.println("Date de la simulation : " + this.dateActuelle);
+				//System.out.println("Date de la simulation : " + this.dateActuelle);
+				System.out.println("Il reste " + this.events.size() + " évènements.");
     }
 
     @Override

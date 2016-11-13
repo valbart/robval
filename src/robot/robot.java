@@ -3,19 +3,27 @@ import terrain.incendie;
 import terrain.Case;
 import terrain.Carte;
 import java.io.*;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-
 import enumeration.NatureTerrain;
 import enumeration.Direction;
-import graphe.*
-;
+import graphe.*;
+import gui.*;
+import evenements.*;
+import exceptions.*;
 
 public abstract class robot {
     private boolean Busy;
 	public Case position;
-    protected float debit_Vidage;
+    protected int debit_Vidage;
     protected int litre_Actuel;
-    private graphe graphe;
+    protected graphe graphe;
+    protected int temps_vidage;
+    
+    public robot(Case position) {
+    	this.position=position;
+    	this.Busy = false;
+    }
     
     public int getLitre() {
     	return this.litre_Actuel;
@@ -23,7 +31,7 @@ public abstract class robot {
     
     public abstract int get_Vitesse(NatureTerrain terrain);
     
-    public abstract void deverser_Eau(int volume, incendie feu);
+    public abstract void deverser_Eau(incendie feu);
     
     public abstract void remplissage(Carte carte);
      
@@ -44,6 +52,7 @@ public abstract class robot {
     	this.Busy = b ;
     }
     
+    
 	public void avancer(Direction x, Carte carte) {
 		Case caseActuelle = this.get_Position();
 		int i = caseActuelle.getLigne();
@@ -54,7 +63,7 @@ public abstract class robot {
 			if (this.get_Vitesse(newNature) != 0) {
 				this.set_Position(newCase);
 				try {
-					TimeUnit.MILLISECONDS.sleep(450);
+					TimeUnit.MILLISECONDS.sleep(50);
 				} catch (InterruptedException e) {
 					
 				}
@@ -64,13 +73,57 @@ public abstract class robot {
 		}
 	}
     
-    public robot(Case position, float debit_Vidage, int litre_Actuel,graphe graphe, boolean Busy) {
-	this.graphe = graphe;
-    this.position=position;
-	this.debit_Vidage = debit_Vidage;
-	this.litre_Actuel = litre_Actuel;
-	this.Busy = Busy;
+	
+	public void trouveChemin(incendie incendie, LinkedList<incendie> listeIncendies, Carte carte, Simulateur simu) {
+		this.setBusy(true);
+		int iAct = this.position.getLigne();
+		int jAct = this.position.getColonne();
+		try {
+			long dateActuelle = simu.getDateActuelle();
+			int i = 1;
+			if (incendie.getPosition().getLigne() != this.position.getLigne() || incendie.getPosition().getColonne() != this.position.getColonne()) {
+				LinkedList<Direction> chemin = this.graphe.dijkstra(iAct, jAct, incendie.getPosition().getLigne(), incendie.getPosition().getColonne());
+				for (Direction dir : chemin){
+					simu.ajouteEvenement(new EvenementDeplacement(dateActuelle+i, carte, this, dir));
+					i++;
+				}
+			}
+			simu.ajouteEvenement(new EvenementDeverserEau(dateActuelle+i, this, listeIncendies, incendie, carte, simu));
+		} catch (PasDeCheminException e) {
+			
+		}
+	}
+	
+	
+	
+	public void trouveCheminEau(Carte carte, Simulateur simu) {
+		this.setBusy(true);
+		int iAct = this.position.getLigne();
+		int jAct = this.position.getColonne();
+		try {
+			int i = 1;
+			long dateActuelle = simu.getDateActuelle();
+			if (! carte.estPretEau(this.position.getLigne(), this.position.getColonne())) {
+				LinkedList<Direction> chemin = this.graphe.dijkstraEau(iAct, jAct, carte);
+				for (Direction dir : chemin){
+					simu.ajouteEvenement(new EvenementDeplacement(dateActuelle+i, carte, this, dir));			
+					i++;
+				}
+			}
+			simu.ajouteEvenement(new EvenementRemplirReservoir(dateActuelle+i, carte, this));
+		} catch (PasDeCheminException e) {
+			
+		}
+	}
+	
+    public void checkReservoir(Carte carte, Simulateur simu) {
+    	if (this.litre_Actuel == 0) {
+    		System.out.println("Le robot est vide il va se remplir");
+    		this.trouveCheminEau(carte, simu);
+    	}
+    	this.setBusy(false);
     }
+	
     
 }
 
