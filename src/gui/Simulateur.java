@@ -143,8 +143,8 @@ public class Simulateur implements Simulable {
 		this.dateActuelle++;
 		while (this.events.peek() != null && (this.events.peek().getDate() == this.dateActuelle)) {
 			this.events.poll().execute();
+			draw();
 		}
-		draw();
 	}
 
 	/**

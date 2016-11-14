@@ -18,6 +18,7 @@ import exceptions.*;
  * <li>Une position </li>
  * <li>Une quantité d'eau déversée à chaque intervention</li>
  * <li>Une quantité d'eau actuelle dans le réservoir du robot</li>
+ * <li>Un entier désignant la vitesse en km/h</li>
  * <li>Un graphe dépendant du type du robot : les sommets du graphes sont les cases sur lesquelles le robot peut se déplacer. Un arc existe entre deux sommets si le robot peut aller de l'un à l'autre, et est valué par le temps mit par le robot pour effectuer ce déplacement</li>
  * <li>Un entier donnant le temps (en secondes) mis par le robot pour verser de l'eau (une intervention) <li>
  * </ul>
@@ -26,6 +27,7 @@ import exceptions.*;
 public abstract class robot {
     private boolean Busy;
 	public Case position;
+	protected int vitesse;
     protected int debit_Vidage;
     protected int litre_Actuel;
     protected graphe graphe;
@@ -41,6 +43,9 @@ public abstract class robot {
     }
     
     public abstract int get_Vitesse(NatureTerrain terrain);
+    
+    
+    public abstract void remplirReservoir(Carte carte, Simulateur simu);
     
     /**
      * Définit la manière dont le robot intervient
@@ -70,6 +75,14 @@ public abstract class robot {
     	this.Busy = b ;
     }
     
+    public void setVitesse(int vitesse) {
+    	this.vitesse = vitesse;
+    }
+    
+    public int getTempsVidage() {
+    	return this.temps_vidage;
+    }
+    
     /**
      * Modifie la position d'un robot sur la carte.
      * @param x la direction selon laquelle avancer
@@ -84,17 +97,21 @@ public abstract class robot {
 			NatureTerrain newNature = newCase.getNature();
 			if (this.get_Vitesse(newNature) != 0) {
 				this.set_Position(newCase);
-				try {
-					TimeUnit.MILLISECONDS.sleep(50);
-				} catch (InterruptedException e) {
-					
-				}
 			} else {
 				System.out.println("Impossible pour ce robot d'avancer sur ce terrain");
 			}
 		}
 	}
     
+	
+	/**
+	 * A SUPPRIMER
+	 * @param c case sur laquelle le robot se rend
+	 * @return la vitesse moyenne du robot entre sa case actuelle et la case c
+	 */
+	public float getVitesseMoyenne(Case c1, Case c2) {
+		return (this.get_Vitesse(c1.getNature()) + this.get_Vitesse(c2.getNature()))/2;
+	}
 	
 	
 	/**
@@ -104,12 +121,12 @@ public abstract class robot {
 	 * @param carte la carte associée
 	 * @param simu le simulateur associé
 	 */
-	public void trouveChemin(incendie incendie, LinkedList<incendie> listeIncendies, Carte carte, Simulateur simu) {
+	/*public void trouveChemin(incendie incendie, LinkedList<incendie> listeIncendies, Carte carte, Simulateur simu) {
 		this.setBusy(true);
 		int iAct = this.position.getLigne();
 		int jAct = this.position.getColonne();
 		try {
-			long dateActuelle = simu.getDateActuelle();
+			long dateDepart = simu.getDateActuelle();
 			int i = 1;
 			if (incendie.getPosition().getLigne() != this.position.getLigne() || incendie.getPosition().getColonne() != this.position.getColonne()) {
 				LinkedList<Direction> chemin = this.graphe.dijkstra(iAct, jAct, incendie.getPosition().getLigne(), incendie.getPosition().getColonne());
@@ -122,7 +139,38 @@ public abstract class robot {
 		} catch (PasDeCheminException e) {
 			
 		}
+	}*/
+	
+	
+	public void trouveChemin(incendie incendie, LinkedList<incendie> listeIncendies, Carte carte, Simulateur simu) {
+		this.setBusy(true);
+		int iAct = this.position.getLigne();
+		int jAct = this.position.getColonne();
+		try {
+			long dateDepart = simu.getDateActuelle();
+			double dateSuiv = (double) dateDepart;
+			if (incendie.getPosition().getLigne() != this.position.getLigne() || incendie.getPosition().getColonne() != this.position.getColonne()) 
+			{	
+				LinkedList<Direction> chemin = this.graphe.dijkstra(iAct, jAct, incendie.getPosition().getLigne(), incendie.getPosition().getColonne());
+				Case C1 = this.position;	
+				Case C2 = C1;
+				for (Direction dir : chemin){
+					C2 = carte.getVoisin(C1.getLigne(), C1.getColonne(),dir);
+					dateSuiv += carte.getTailleCase()/this.getVitesseMoyenne(C1,C2);
+					simu.ajouteEvenement(new EvenementDeplacement((int)Math.ceil(dateSuiv), carte, this, dir));
+					C1 = C2;
+				}
+			
+			}
+			simu.ajouteEvenement(new EvenementDeverserEau((int)Math.ceil(dateSuiv)+this.temps_vidage, this, listeIncendies, incendie, carte, simu));
+		} catch (PasDeCheminException e) {
+			
+		}
 	}
+	
+	
+	
+	
 	
 	
 	/**
@@ -130,6 +178,12 @@ public abstract class robot {
 	 * @param carte la carte associée
 	 * @param simu le simulateur associé
 	 */
+	
+	
+
+	
+	
+	/*
 	public void trouveCheminEau(Carte carte, Simulateur simu) {
 		this.setBusy(true);
 		int iAct = this.position.getLigne();
@@ -144,12 +198,13 @@ public abstract class robot {
 					i++;
 				}
 			}
+			
 			simu.ajouteEvenement(new EvenementRemplirReservoir(dateActuelle+i, carte, this));
 		} catch (PasDeCheminException e) {
 			
 		}
 	}
-	
+	*/
 	
     
 }

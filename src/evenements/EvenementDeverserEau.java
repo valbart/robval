@@ -26,25 +26,34 @@ public class EvenementDeverserEau extends Evenement {
 		this.simu = simu;
 	}
 	
-/**
- * Ordonne au robot lié à l'évènement de deverser de l'eau sur un incendie.
- * Si le robot n'a plus d'eau, cet évènement l'envoie se remplir.
- */
-	public void execute(){
+	/**
+	 * Ordonne au robot lié à l'évènement de deverser de l'eau sur un incendie.
+	 * Si le robot n'a plus d'eau, cet évènement l'envoie se remplir.
+	 */
+	public void execute() {
 		robot.setBusy(true);
+
 		if (robot.getLitre() > 0 && this.incendie.getIntensite() > 0) {
 			this.robot.deverser_Eau(this.incendie);
 		}
-		if (this.incendie.getIntensite() <= 0) {
-			System.out.println("Le feu (" + this.incendie.getPosition().getLigne() + "," + this.incendie.getPosition().getColonne() + ") est éteind");
-			listeIncendies.remove(this.incendie);
-			this.robot.setBusy(false);
-		} else if (this.robot.getLitre() > 0) {
-			this.simu.ajouteEvenement(new EvenementDeverserEau(this.date+1, this.robot, this.listeIncendies, this.incendie, this.carte, this.simu));
-		} else {
-			this.robot.trouveCheminEau(this.carte, this.simu);
-			this.incendie.enCourExctinction = false;
-		}
 
+		if (this.incendie.getIntensite() <= 0) {
+			System.out.println("Le feu (" + this.incendie.getPosition().getLigne() + ","
+					+ this.incendie.getPosition().getColonne() + ") est éteind");
+			listeIncendies.remove(this.incendie);
+			if (this.robot.getLitre() > 0) {
+				this.robot.setBusy(false);
+			} else {
+				this.robot.remplirReservoir(this.carte, this.simu);
+			}
+		} else {
+			if (this.robot.getLitre() > 0) {
+				this.simu.ajouteEvenement(new EvenementDeverserEau(this.date + this.robot.getTempsVidage(), this.robot,
+						this.listeIncendies, this.incendie, this.carte, this.simu));
+			} else {
+				this.incendie.enCourExctinction = false;
+				this.robot.remplirReservoir(this.carte, this.simu);
+			}
+		}
 	}
 }

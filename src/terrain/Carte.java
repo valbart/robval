@@ -47,6 +47,10 @@ public class Carte {
 		this.tailleCase = tailleCase;
 	}
 	
+	public int getTailleCase() {
+		return this.tailleCase;
+	}
+	
 	public Case getCase(int i, int j) {
 		return this.map[i][j];
 	}

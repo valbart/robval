@@ -235,15 +235,12 @@ public class LecteurDonnees {
             robot robot = parseType(type,posRobot,data);           
 
             data.robots[i] = robot;
-
-            // A FAIRE : SET LA VITESSE EVENTUELLEMENT SPECIFIE
-            // lecture eventuelle d'une vitesse du robot (entier)
-            String s = scanner.findInLine("(\\d+)");	// 1 or more digit(s) ?
-            // pour lire un flottant:    ("(\\d+(\\.\\d+)?)");
+            String s = scanner.findInLine("(\\d+)");
 
             if (s == null) {
             } else {
                 int vitesse = Integer.parseInt(s);
+                data.robots[i].setVitesse(vitesse);
             }
             verifieLigneTerminee();
         } catch (NoSuchElementException e) {

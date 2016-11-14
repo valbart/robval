@@ -5,6 +5,7 @@ import terrain.Case;
 import java.util.concurrent.TimeUnit;
 import enumeration.NatureTerrain;
 import graphe.*;
+import gui.Simulateur;
 
 public class robot_Pattes extends robot {
 
@@ -14,18 +15,12 @@ public class robot_Pattes extends robot {
 		this.litre_Actuel = Integer.MAX_VALUE;
 		this.temps_vidage = 1;
 		this.graphe = Graphe;
+		this.vitesse = 30000/3600;
 	}
 
 	public void deverser_Eau(incendie feu) {
-		System.out.println("Le robot a patte intervient...");
+		//System.out.println("Le robot a patte intervient...");
 		feu.setIntensite(feu.getIntensite()-this.debit_Vidage);
-		try {
-			TimeUnit.MILLISECONDS.sleep((long)(this.temps_vidage));
-		} catch (InterruptedException e){
-		}
-	}
-	
-	public void remplissage(Carte carte) {
 	}
 
 	public int get_Vitesse(NatureTerrain terrain) {
@@ -33,10 +28,15 @@ public class robot_Pattes extends robot {
 		if (terrain == NatureTerrain.EAU) {
 			return (0);
 		} else if (terrain == NatureTerrain.ROCHE) {
-			return (10);
+			return (10000/3600);
 		} else {
-			return (30);
+			return this.vitesse;
 		}
 	}
-
+	
+	public void remplissage(Carte carte) {
+	}
+	
+	public void remplirReservoir(Carte carte, Simulateur simu) {
+	}
 }
